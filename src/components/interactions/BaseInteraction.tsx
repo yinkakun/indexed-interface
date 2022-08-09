@@ -2,6 +2,7 @@ import * as yup from "yup";
 import { Alert, Button, Col, Divider, Row, Space, message } from "antd";
 import { BigNumber, convert } from "helpers";
 import { Flipper } from "./Flipper";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { Formik, FormikProps, useFormikContext } from "formik";
 import {
   ReactNode,
@@ -11,8 +12,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { TokenSelector } from "components/common/TokenSelector/TokenSelector"; // Circular dependency.
-import { selectors } from "features";
+import { TokenSelector } from "components/common/TokenSelector/TokenSelector";
+import { selectors } from "features"; // Circular dependency.
 import {
   useBreakpoints,
   useCachedValue,
@@ -25,6 +26,7 @@ import {
   useTranslator,
 } from "hooks";
 import { useSelector } from "react-redux";
+import { yupResolver } from "@hookform/resolvers/yup";
 import isEqual from "lodash.isequal";
 import noop from "lodash.noop";
 
@@ -95,36 +97,44 @@ export function SingleInteraction({
 }: Props) {
   const interactionRef = useRef<null | HTMLDivElement>(null);
 
+  const methods = useForm({
+    resolver: yupResolver(singleInteractionSchema),
+  });
+
   return (
     <div
       className="Interaction"
       ref={interactionRef}
       style={{ position: "relative" }}
     >
-      <Formik
-        initialValues={singleInitialValues}
-        onSubmit={onSubmit}
-        validationSchema={singleInteractionSchema}
-      >
-        {(props) => (
-          <SingleInteractionInner
-            {...props}
-            loading={loading}
-            assets={assets}
-            spender={spender}
-            extra={extra}
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(() => onSubmit)}>
+          <Formik
+            initialValues={singleInitialValues}
             onSubmit={onSubmit}
-            onChange={onChange}
-            defaultInputSymbol={defaultInputSymbol}
-            defaultOutputSymbol={defaultOutputSymbol}
-            disableInputSelect={disableInputSelect}
-            disableOutputSelect={disableOutputSelect}
-            requiresApproval={requiresApproval}
-            disableInputEntry={disableInputEntry}
-            disableOutputEntry={disableOutputEntry}
-          />
-        )}
-      </Formik>
+            validationSchema={singleInteractionSchema}
+          >
+            {(props) => (
+              <SingleInteractionInner
+                {...props}
+                loading={loading}
+                assets={assets}
+                spender={spender}
+                extra={extra}
+                onSubmit={onSubmit}
+                onChange={onChange}
+                defaultInputSymbol={defaultInputSymbol}
+                defaultOutputSymbol={defaultOutputSymbol}
+                disableInputSelect={disableInputSelect}
+                disableOutputSelect={disableOutputSelect}
+                requiresApproval={requiresApproval}
+                disableInputEntry={disableInputEntry}
+                disableOutputEntry={disableOutputEntry}
+              />
+            )}
+          </Formik>
+        </form>
+      </FormProvider>
     </div>
   );
 }

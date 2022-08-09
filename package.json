@@ -5,6 +5,7 @@
   "proxy": "https://api.thegraph.com",
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "@hookform/resolvers": "^2.9.7",
     "@indexed-finance/indexed.js": "^1.0.45",
     "@indexed-finance/narwhal-sdk": "^1.0.2",
     "@indexed-finance/subgraph-clients": "^0.0.23",
@@ -49,6 +50,7 @@
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.34.0",
     "react-icons": "^4.2.0",
     "react-identicons": "^1.2.5",
     "react-markdown": "^6.0.2",
